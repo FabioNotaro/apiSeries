@@ -1,7 +1,8 @@
 <?php
 
-//$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-//$dotenv->load();
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+print_r($_ENV);
 
 if (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true') {
     ini_set('display_errors', 1);
@@ -18,7 +19,7 @@ set_exception_handler(function (\Throwable $exception) {
     header('Content-Type: application/json; charset=UTF-8');
     $error = [
         'success' => false,
-        'message' => 'Erro interno no servidor',
+        'message' => 'Internal Server Error',
     ];
     if (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true') {
         $error['error_details'] = [
