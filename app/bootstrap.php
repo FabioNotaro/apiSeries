@@ -33,5 +33,5 @@ set_exception_handler(function (\Throwable $exception) {
     exit;
 });
 date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
-$dbConfig = require_once __DIR__ . '/Config/database.php';
+$dbConfig = require_once __DIR__ . '/config/database.php';
 define('BASE_PATH', dirname(__DIR__));
