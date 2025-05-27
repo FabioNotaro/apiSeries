@@ -1,8 +1,31 @@
 <?php
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+use Doctrine\Common\Cache\Psr6\DoctrineProvider;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Dotenv\Dotenv;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 print_r($_ENV);
+
+$isDevMode = $_ENV['APP_DEBUG'] === 'true';
+date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
+$entityPaths = [__DIR__ . '/../App/Models'];
+$dbParams = require_once __DIR__ . '/../config/database.php';
+
+$cache = DoctrineProvider::wrap(new ArrayAdapter());
+
+$config = ORMSetup::createAttributeMetadataConfiguration(
+    $entityPaths,
+    $isDevMode,
+    null,
+    $cache,
+    false
+);
+
+$entityManager = new EntityManager($dbParams, $config);
 
 if (isset($_ENV['APP_DEBUG']) && $_ENV['APP_DEBUG'] === 'true') {
     ini_set('display_errors', 1);
@@ -32,6 +55,5 @@ set_exception_handler(function (\Throwable $exception) {
     echo json_encode($error);
     exit;
 });
-date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
-$dbConfig = require_once __DIR__ . '/config/database.php';
+
 define('BASE_PATH', dirname(__DIR__));
